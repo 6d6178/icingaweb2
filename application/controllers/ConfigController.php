@@ -102,6 +102,7 @@ class ConfigController extends Controller
         $this->view->modules = Icinga::app()->getModuleManager()->select()
             ->from('modules')
             ->order('enabled', 'desc')
+            ->order('installed', 'asc')
             ->order('name');
         $this->setupLimitControl();
         $this->setupPaginationControl($this->view->modules);
