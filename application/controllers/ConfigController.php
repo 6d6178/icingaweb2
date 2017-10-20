@@ -114,7 +114,7 @@ class ConfigController extends Controller
         $app = Icinga::app();
         $manager = $app->getModuleManager();
         $name = $this->getParam('name');
-        if ($manager->hasInstalled($name)) {
+        if ($manager->hasInstalled($name) || $manager->hasEnabled($name)) {
             $this->view->moduleData = $manager->select()->from('modules')->where('name', $name)->fetchRow();
             if ($manager->hasLoaded($name)) {
                 $module = $manager->getModule($name);
