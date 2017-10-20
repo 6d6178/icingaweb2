@@ -331,12 +331,6 @@ class Manager
         }
 
         $link = $this->enableDir . DIRECTORY_SEPARATOR . $name;
-        if (! file_exists($link)) {
-            throw new ConfigurationError(
-                'Cannot disable module "%s". Module is not installed.',
-                $name
-            );
-        }
         if (! is_link($link)) {
             throw new ConfigurationError(
                 'Cannot disable module %s at %s. '
@@ -348,7 +342,7 @@ class Manager
             );
         }
 
-        if (file_exists($link) && is_link($link)) {
+        if (is_link($link)) {
             if (! @unlink($link)) {
                 $error = error_get_last();
                 throw new SystemPermissionException(
