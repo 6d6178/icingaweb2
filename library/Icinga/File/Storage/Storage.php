@@ -3,46 +3,76 @@
 
 namespace Icinga\File\Storage;
 
+use Icinga\Exception\NotFoundError;
 use Icinga\Exception\NotReadableError;
 use Icinga\Exception\NotWritableError;
 
 abstract class Storage
 {
     /**
-     * Get all existing buckets by ID
+     * Get all existing files by name
      *
-     * @return  Bucket[]
+     * @return  File[]
      *
      * @throws  NotReadableError
      */
-    public function getBuckets()
+    public function getFiles()
     {
     }
 
     /**
-     * Get or create a bucket by ID
+     * Get a file by name
      *
-     * A fresh bucket will be persisted once one file's content has been updated.
+     * @param   string  $name
      *
-     * @param   string  $id
+     * @return  File
      *
-     * @return  Bucket
+     * @throws  NotReadableError
+     * @throws  NotFoundError
      */
-    public function getOrCreateBucket($id)
+    public function getFile($name)
     {
     }
 
     /**
-     * Delete a bucket by ID if it exists
+     * Get or create a file by name
      *
-     * @param   string  $id
+     * A fresh file will be persisted once its content has been updated.
      *
-     * @return  bool        Whether the bucket existed
+     * @param   string  $name
+     *
+     * @return  File
+     */
+    public function getOrCreateFile($name)
+    {
+    }
+
+    /**
+     * Delete a file by name
+     *
+     * @param   string  $name
+     *
+     * @return  $this
+     *
+     * @throws  NotReadableError
+     * @throws  NotWritableError
+     * @throws  NotFoundError
+     */
+    public function deleteFile($name)
+    {
+    }
+
+    /**
+     * Delete a file by name if it exists
+     *
+     * @param   string  $name
+     *
+     * @return  bool            Whether the file existed
      *
      * @throws  NotReadableError
      * @throws  NotWritableError
      */
-    public function deleteBucketIfExists($id)
+    public function deleteFileIfExists($name)
     {
     }
 }
