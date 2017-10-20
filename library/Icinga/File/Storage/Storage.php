@@ -61,18 +61,4 @@ abstract class Storage
     public function deleteFile($name)
     {
     }
-
-    /**
-     * Delete a file by name if it exists
-     *
-     * @param   string  $name
-     *
-     * @return  bool            Whether the file existed
-     *
-     * @throws  NotReadableError
-     * @throws  NotWritableError
-     */
-    public function deleteFileIfExists($name)
-    {
-    }
 }
