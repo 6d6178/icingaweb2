@@ -473,6 +473,7 @@ class Manager
      * Each entry has the following fields
      * * name, name of the module as a string
      * * path, path where the module is located as a string
+     * * installed, whether the module is installed or not as a boolean
      * * enabled, whether the module is enabled or not as a boolean
      * * loaded, whether the module is loaded or not as a boolean
      *
@@ -482,25 +483,28 @@ class Manager
     {
         $info = array();
 
-        $enabled = $this->listEnabledModules();
-        foreach ($enabled as $name) {
-            $info[$name] = (object) array(
-                'name'    => $name,
-                'path'    => $this->enabledDirs[$name],
-                'enabled' => true,
-                'loaded'  => $this->hasLoaded($name)
-            );
-        }
-
         $installed = $this->listInstalledModules();
         foreach ($installed as $name) {
             $info[$name] = (object) array(
-                'name'    => $name,
-                'path'    => $this->installedBaseDirs[$name],
-                'enabled' => $this->hasEnabled($name),
-                'loaded'  => $this->hasLoaded($name)
+                'name'      => $name,
+                'path'      => $this->installedBaseDirs[$name],
+                'installed' => true,
+                'enabled'   => $this->hasEnabled($name),
+                'loaded'    => $this->hasLoaded($name)
             );
         }
+
+        $enabled = $this->listEnabledModules();
+        foreach ($enabled as $name) {
+            $info[$name] = (object) array(
+                'name'      => $name,
+                'path'      => $this->enabledDirs[$name],
+                'installed' => $this->enabledDirs[$name] !== '',
+                'enabled'   => true,
+                'loaded'    => $this->hasLoaded($name)
+            );
+        }
+
         return $info;
     }
 
