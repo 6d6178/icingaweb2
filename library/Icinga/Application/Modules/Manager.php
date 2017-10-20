@@ -158,17 +158,19 @@ class Manager
                 }
 
                 $dir = realpath($link);
-                if (! file_exists($dir) || !is_dir($dir)) {
+                if ($dir !== false && is_dir($dir)) {
+                    $this->enabledDirs[$file] = $dir;
+                } else {
+                    $this->enabledDirs[$file] = '';
+
                     Logger::warning(
                         'Found invalid module in enabledModule directory "%s": "%s" points to non existing path "%s"',
                         $this->enableDir,
                         $link,
                         $dir
                     );
-                    continue;
                 }
 
-                $this->enabledDirs[$file] = $dir;
                 ksort($this->enabledDirs);
             }
             closedir($dh);
