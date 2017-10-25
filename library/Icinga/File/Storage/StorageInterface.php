@@ -31,7 +31,7 @@ interface StorageInterface
      * @throws  AlreadyExistsException
      * @throws  NotWritableError
      */
-    public function createFile($path, $content);
+    public function create($path, $content);
 
     /**
      * Load the content of the given file
@@ -43,7 +43,7 @@ interface StorageInterface
      * @throws  NotReadableError
      * @throws  NotFoundError
      */
-    public function readFile($path);
+    public function read($path);
 
     /**
      * Overwrite the given file with the given content
@@ -57,7 +57,7 @@ interface StorageInterface
      * @throws  NotFoundError
      * @throws  NotWritableError
      */
-    public function updateFile($path, $content);
+    public function update($path, $content);
 
     /**
      * Delete the given file
@@ -70,7 +70,7 @@ interface StorageInterface
      * @throws  NotFoundError
      * @throws  NotWritableError
      */
-    public function deleteFile($path);
+    public function delete($path);
 
     /**
      * Get the absolute path to the given file in the local file system
