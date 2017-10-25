@@ -40,7 +40,6 @@ interface StorageInterface extends IteratorAggregate
      *
      * @return  $this
      *
-     * @throws  NotReadableError
      * @throws  AlreadyExistsException
      * @throws  NotWritableError
      */
@@ -66,7 +65,6 @@ interface StorageInterface extends IteratorAggregate
      *
      * @return  $this
      *
-     * @throws  NotReadableError
      * @throws  NotFoundError
      * @throws  NotWritableError
      */
@@ -79,7 +77,6 @@ interface StorageInterface extends IteratorAggregate
      *
      * @return  $this
      *
-     * @throws  NotReadableError
      * @throws  NotFoundError
      * @throws  NotWritableError
      */
