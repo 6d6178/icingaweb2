@@ -83,15 +83,14 @@ interface StorageInterface extends IteratorAggregate
     public function delete($path);
 
     /**
-     * Get the absolute path to the given file in the local file system
+     * Get the absolute path to the given file
      *
-     * If the storage is not local, the file will be downloaded to a temporary local file first.
+     * @param   string  $path
      *
      * @return  string
      *
      * @throws  NotReadableError
      * @throws  NotFoundError
-     * @throws  NotWritableError
      */
-    public function getLocalPath();
+    public function resolvePath($path);
 }
