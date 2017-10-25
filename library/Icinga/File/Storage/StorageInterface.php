@@ -86,11 +86,12 @@ interface StorageInterface extends IteratorAggregate
      * Get the absolute path to the given file
      *
      * @param   string  $path
+     * @param   bool    $assertExistance    Whether to require that the given file exists
      *
      * @return  string
      *
-     * @throws  NotReadableError    If the file list can't be read
-     * @throws  NotFoundError       If the file can't be found
+     * @throws  NotReadableError    If the file has to exist, but the file list can't be read
+     * @throws  NotFoundError       If the file has to exist, but can't be found
      */
-    public function resolvePath($path);
+    public function resolvePath($path, $assertExistance = false);
 }
