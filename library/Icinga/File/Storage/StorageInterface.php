@@ -17,7 +17,7 @@ interface StorageInterface extends IteratorAggregate
      *
      * @return  Traversable
      *
-     * @throws  NotReadableError
+     * @throws  NotReadableError    If the file list can't be read
      */
     public function getIterator();
 
@@ -28,7 +28,7 @@ interface StorageInterface extends IteratorAggregate
      *
      * @return  bool
      *
-     * @throws  NotReadableError
+     * @throws  NotReadableError    If the file list can't be read
      */
     public function has($path);
 
@@ -40,8 +40,8 @@ interface StorageInterface extends IteratorAggregate
      *
      * @return  $this
      *
-     * @throws  AlreadyExistsException
-     * @throws  NotWritableError
+     * @throws  AlreadyExistsException  If the file already exists
+     * @throws  NotWritableError        If the file can't be written to
      */
     public function create($path, $content);
 
@@ -52,8 +52,8 @@ interface StorageInterface extends IteratorAggregate
      *
      * @return  mixed
      *
-     * @throws  NotReadableError
-     * @throws  NotFoundError
+     * @throws  NotFoundError       If the file can't be found
+     * @throws  NotReadableError    If the file can't be read
      */
     public function read($path);
 
@@ -65,8 +65,8 @@ interface StorageInterface extends IteratorAggregate
      *
      * @return  $this
      *
-     * @throws  NotFoundError
-     * @throws  NotWritableError
+     * @throws  NotFoundError       If the file can't be found
+     * @throws  NotWritableError    If the file can't be written to
      */
     public function update($path, $content);
 
@@ -77,8 +77,8 @@ interface StorageInterface extends IteratorAggregate
      *
      * @return  $this
      *
-     * @throws  NotFoundError
-     * @throws  NotWritableError
+     * @throws  NotFoundError       If the file can't be found
+     * @throws  NotWritableError    If the file can't be deleted
      */
     public function delete($path);
 
@@ -89,8 +89,8 @@ interface StorageInterface extends IteratorAggregate
      *
      * @return  string
      *
-     * @throws  NotReadableError
-     * @throws  NotFoundError
+     * @throws  NotReadableError    If the file list can't be read
+     * @throws  NotFoundError       If the file can't be found
      */
     public function resolvePath($path);
 }
