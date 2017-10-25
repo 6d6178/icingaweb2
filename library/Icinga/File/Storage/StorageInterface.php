@@ -7,17 +7,19 @@ use Icinga\Exception\AlreadyExistsException;
 use Icinga\Exception\NotFoundError;
 use Icinga\Exception\NotReadableError;
 use Icinga\Exception\NotWritableError;
+use IteratorAggregate;
+use Traversable;
 
-interface StorageInterface
+interface StorageInterface extends IteratorAggregate
 {
     /**
-     * Get all existing files' paths
+     * Iterate over all existing files' paths
      *
-     * @return  string[]
+     * @return  Traversable
      *
      * @throws  NotReadableError
      */
-    public function getFiles();
+    public function getIterator();
 
     /**
      * Return whether the given file exists
