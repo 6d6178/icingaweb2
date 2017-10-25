@@ -34,7 +34,7 @@ interface StorageInterface
      * Create the given file with the given content
      *
      * @param   string  $path
-     * @param   string  $content
+     * @param   mixed   $content
      *
      * @return  $this
      *
@@ -49,7 +49,7 @@ interface StorageInterface
      *
      * @param   string  $path
      *
-     * @return  string
+     * @return  mixed
      *
      * @throws  NotReadableError
      * @throws  NotFoundError
@@ -60,7 +60,7 @@ interface StorageInterface
      * Overwrite the given file with the given content
      *
      * @param   string  $path
-     * @param   string  $content
+     * @param   mixed   $content
      *
      * @return  $this
      *
