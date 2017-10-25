@@ -20,6 +20,17 @@ interface StorageInterface
     public function getFiles();
 
     /**
+     * Return whether the given file exists
+     *
+     * @param   string  $path
+     *
+     * @return  bool
+     *
+     * @throws  NotReadableError
+     */
+    public function has($path);
+
+    /**
      * Create the given file with the given content
      *
      * @param   string  $path
