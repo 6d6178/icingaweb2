@@ -11,6 +11,7 @@ use Icinga\Exception\NotWritableError;
 use InvalidArgumentException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use UnexpectedValueException;
 
 /**
  * Stores files in the local file system
@@ -36,29 +37,43 @@ class LocalFileStorage implements StorageInterface
 
     public function getIterator()
     {
-        $baseDirLen = strlen($this->baseDir);
-
-        $innerIterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator(
+        try {
+            $innerIterator = new RecursiveDirectoryIterator(
                 $this->baseDir,
                 RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
                     | RecursiveDirectoryIterator::KEY_AS_PATHNAME
                     | RecursiveDirectoryIterator::SKIP_DOTS
-            ),
-            RecursiveIteratorIterator::LEAVES_ONLY
-        );
-
-        foreach ($innerIterator as $path => $entry) {
-            /** @var \SplFileInfo $entry */
-            if ($entry->isFile()) {
-                yield ltrim(substr($path, $baseDirLen), DIRECTORY_SEPARATOR);
-            }
+            );
+        } catch (UnexpectedValueException $e) {
+            throw new NotReadableError('Couldn\'t read the directory "%s": %s', $this->baseDir, $e);
         }
+
+        return $this->iterateInnerIterator(
+            new RecursiveIteratorIterator($innerIterator, RecursiveIteratorIterator::LEAVES_ONLY)
+        );
     }
 
     public function has($path)
     {
-        return is_file($this->resolvePath($path));
+        $resolvedPath = $this->resolvePath($path);
+        if (is_file($resolvedPath)) {
+            return true;
+        }
+
+        if (! is_readable($this->baseDir)) {
+            throw new NotReadableError('Couldn\'t read the directory "%s"', $this->baseDir);
+        }
+
+        $dir = dirname($resolvedPath);
+        while (! is_dir($dir)) {
+            $dir = dirname($dir);
+        }
+
+        if (! is_readable($dir)) {
+            throw new NotReadableError('Couldn\'t read the directory "%s"', $dir);
+        }
+
+        return false;
     }
 
     public function create($path, $content)
@@ -156,6 +171,25 @@ class LocalFileStorage implements StorageInterface
                 mkdir($dir, 02770);
             } catch (ErrorException $e) {
                 throw new NotWritableError('Couldn\'t create the directory "%s": %s', $dir, $e);
+            }
+        }
+    }
+
+    /**
+     * Helper method for {@link getIterator()} to make sure that its exceptions are not delayed
+     *
+     * @param RecursiveIteratorIterator $innerIterator
+     *
+     * @return \Generator
+     */
+    protected function iterateInnerIterator(RecursiveIteratorIterator $innerIterator)
+    {
+        $baseDirLen = strlen($this->baseDir);
+
+        foreach ($innerIterator as $path => $entry) {
+            /** @var \SplFileInfo $entry */
+            if ($entry->isFile()) {
+                yield ltrim(substr($path, $baseDirLen), DIRECTORY_SEPARATOR);
             }
         }
     }
