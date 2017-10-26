@@ -8,6 +8,7 @@ use Icinga\Exception\AlreadyExistsException;
 use Icinga\Exception\NotFoundError;
 use Icinga\Exception\NotReadableError;
 use Icinga\Exception\NotWritableError;
+use InvalidArgumentException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
@@ -122,7 +123,23 @@ class LocalFileStorage implements StorageInterface
             throw new NotFoundError('No such file: "%s"', $path);
         }
 
-        return $this->baseDir . DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR);
+        $steps = preg_split('~/~', $path, -1, PREG_SPLIT_NO_EMPTY);
+        for ($i = 0; $i < count($steps);) {
+            if ($steps[$i] === '.') {
+                array_splice($steps, $i, 1);
+            } elseif ($steps[$i] === '..' && $i > 0 && $steps[$i - 1] !== '..') {
+                array_splice($steps, $i - 1, 2);
+                --$i;
+            } else {
+                ++$i;
+            }
+        }
+
+        if ($steps[0] === '..') {
+            throw new InvalidArgumentException('Paths above the base directory are not allowed');
+        }
+
+        return $this->baseDir . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $steps);
     }
 
     /**
