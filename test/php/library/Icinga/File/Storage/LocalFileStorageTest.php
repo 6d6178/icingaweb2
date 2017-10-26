@@ -64,14 +64,6 @@ class LocalFileStorageTest extends BaseTestCase
         static::assertTrue($lfs->has('foobar'));
     }
 
-    /**
-     * @expectedException \Icinga\Exception\NotReadableError
-     */
-    public function testHasThrowsNotReadableError()
-    {
-        (new LocalFileStorage('/notreadabledirectory'))->has('foobar');
-    }
-
     public function testCreate()
     {
         $lfs = new TemporaryLocalFileStorage();

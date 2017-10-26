@@ -27,8 +27,6 @@ interface StorageInterface extends IteratorAggregate
      * @param   string  $path
      *
      * @return  bool
-     *
-     * @throws  NotReadableError    If the file list can't be read
      */
     public function has($path);
 

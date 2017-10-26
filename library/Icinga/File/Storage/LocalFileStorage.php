@@ -55,25 +55,7 @@ class LocalFileStorage implements StorageInterface
 
     public function has($path)
     {
-        $resolvedPath = $this->resolvePath($path);
-        if (is_file($resolvedPath)) {
-            return true;
-        }
-
-        if (! is_readable($this->baseDir)) {
-            throw new NotReadableError('Couldn\'t read the directory "%s"', $this->baseDir);
-        }
-
-        $dir = dirname($resolvedPath);
-        while (! is_dir($dir)) {
-            $dir = dirname($dir);
-        }
-
-        if (! is_readable($dir)) {
-            throw new NotReadableError('Couldn\'t read the directory "%s"', $dir);
-        }
-
-        return false;
+        return is_file($this->resolvePath($path));
     }
 
     public function create($path, $content)
