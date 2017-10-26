@@ -17,18 +17,8 @@ class TemporaryLocalFileStorage extends LocalFileStorage
      */
     public function __construct()
     {
-        $tempRootDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR;
-
-        for (;;) {
-            $path = $tempRootDir . uniqid();
-            try {
-                mkdir($path, 0700);
-            } catch (ErrorException $e) {
-                continue;
-            }
-
-            break;
-        }
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid();
+        mkdir($path, 0700);
 
         parent::__construct($path);
     }
