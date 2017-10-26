@@ -11,7 +11,7 @@ use Icinga\Test\BaseTestCase;
 
 class LocalFileStorageTest extends BaseTestCase
 {
-    public function __construct($name = null, array $data = [], $dataName = '')
+    public function __construct($name = null, array $data = array(), $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
 
@@ -44,7 +44,7 @@ class LocalFileStorageTest extends BaseTestCase
     {
         $lfs = new TemporaryLocalFileStorage();
         $lfs->create('foobar', 'Hello world!');
-        static::assertSame(['foobar'], array_values(iterator_to_array($lfs->getIterator())));
+        static::assertSame(array('foobar'), array_values(iterator_to_array($lfs->getIterator())));
     }
 
     /**
@@ -52,7 +52,8 @@ class LocalFileStorageTest extends BaseTestCase
      */
     public function testGetIteratorThrowsNotReadableError()
     {
-        (new LocalFileStorage('/notreadabledirectory'))->getIterator();
+        $lfs = new LocalFileStorage('/notreadabledirectory');
+        $lfs->getIterator();
     }
 
     public function testHas()
@@ -86,7 +87,8 @@ class LocalFileStorageTest extends BaseTestCase
      */
     public function testCreateThrowsNotWritableError()
     {
-        (new LocalFileStorage('/notwritabledirectory'))->create('foobar', 'Hello world!');
+        $lfs = new LocalFileStorage('/notwritabledirectory');
+        $lfs->create('foobar', 'Hello world!');
     }
 
     public function testRead()
@@ -101,7 +103,8 @@ class LocalFileStorageTest extends BaseTestCase
      */
     public function testReadThrowsNotFoundError()
     {
-        (new TemporaryLocalFileStorage())->read('foobar');
+        $lfs = new TemporaryLocalFileStorage();
+        $lfs->read('foobar');
     }
 
     /**
@@ -128,7 +131,8 @@ class LocalFileStorageTest extends BaseTestCase
      */
     public function testUpdateThrowsNotFoundError()
     {
-        (new TemporaryLocalFileStorage())->update('foobar', 'Hello universe!');
+        $lfs = new TemporaryLocalFileStorage();
+        $lfs->update('foobar', 'Hello universe!');
     }
 
     /**
@@ -155,7 +159,8 @@ class LocalFileStorageTest extends BaseTestCase
      */
     public function testDeleteThrowsNotFoundError()
     {
-        (new TemporaryLocalFileStorage())->delete('foobar');
+        $lfs = new TemporaryLocalFileStorage();
+        $lfs->delete('foobar');
     }
 
     /**
@@ -181,10 +186,8 @@ class LocalFileStorageTest extends BaseTestCase
 
     public function testResolvePath()
     {
-        static::assertSame(
-            '/notreadabledirectory/foobar',
-            (new LocalFileStorage('/notreadabledirectory'))->resolvePath('./notRelevant/../foobar')
-        );
+        $lfs = new LocalFileStorage('/notreadabledirectory');
+        static::assertSame('/notreadabledirectory/foobar', $lfs->resolvePath('./notRelevant/../foobar'));
     }
 
     public function testResolvePathAssertExistance()
@@ -195,19 +198,12 @@ class LocalFileStorageTest extends BaseTestCase
     }
 
     /**
-     * @expectedException \Icinga\Exception\NotReadableError
-     */
-    public function testResolvePathThrowsNotReadableError()
-    {
-        (new LocalFileStorage('/notreadabledirectory'))->resolvePath('foobar', true);
-    }
-
-    /**
      * @expectedException \Icinga\Exception\NotFoundError
      */
     public function testResolvePathThrowsNotFoundError()
     {
-        (new TemporaryLocalFileStorage())->resolvePath('foobar', true);
+        $lfs = new TemporaryLocalFileStorage();
+        $lfs->resolvePath('foobar', true);
     }
 
     /**
@@ -215,6 +211,7 @@ class LocalFileStorageTest extends BaseTestCase
      */
     public function testResolvePathThrowsInvalidArgumentException()
     {
-        (new LocalFileStorage('/notreadabledirectory'))->resolvePath('../foobar');
+        $lfs = new LocalFileStorage('/notreadabledirectory');
+        $lfs->resolvePath('../foobar');
     }
 }

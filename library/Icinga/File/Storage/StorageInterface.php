@@ -88,7 +88,6 @@ interface StorageInterface extends IteratorAggregate
      *
      * @return  string
      *
-     * @throws  NotReadableError    If the file has to exist, but the file list can't be read
      * @throws  NotFoundError       If the file has to exist, but can't be found
      */
     public function resolvePath($path, $assertExistance = false);
