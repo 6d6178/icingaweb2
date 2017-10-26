@@ -38,19 +38,10 @@ class LocalFileStorage implements StorageInterface
     public function getIterator()
     {
         try {
-            $innerIterator = new RecursiveDirectoryIterator(
-                $this->baseDir,
-                RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
-                    | RecursiveDirectoryIterator::KEY_AS_PATHNAME
-                    | RecursiveDirectoryIterator::SKIP_DOTS
-            );
+            return new LocalFileStorageIterator($this->baseDir);
         } catch (UnexpectedValueException $e) {
             throw new NotReadableError('Couldn\'t read the directory "%s": %s', $this->baseDir, $e);
         }
-
-        return $this->iterateInnerIterator(
-            new RecursiveIteratorIterator($innerIterator, RecursiveIteratorIterator::LEAVES_ONLY)
-        );
     }
 
     public function has($path)
@@ -153,25 +144,6 @@ class LocalFileStorage implements StorageInterface
                 mkdir($dir, 02770);
             } catch (ErrorException $e) {
                 throw new NotWritableError('Couldn\'t create the directory "%s": %s', $dir, $e);
-            }
-        }
-    }
-
-    /**
-     * Helper method for {@link getIterator()} to make sure that its exceptions are not delayed
-     *
-     * @param RecursiveIteratorIterator $innerIterator
-     *
-     * @return \Generator
-     */
-    protected function iterateInnerIterator(RecursiveIteratorIterator $innerIterator)
-    {
-        $baseDirLen = strlen($this->baseDir);
-
-        foreach ($innerIterator as $path => $entry) {
-            /** @var \SplFileInfo $entry */
-            if ($entry->isFile()) {
-                yield ltrim(substr($path, $baseDirLen), DIRECTORY_SEPARATOR);
             }
         }
     }

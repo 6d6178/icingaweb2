@@ -44,7 +44,7 @@ class LocalFileStorageTest extends BaseTestCase
     {
         $lfs = new TemporaryLocalFileStorage();
         $lfs->create('foobar', 'Hello world!');
-        static::assertSame(['foobar'], iterator_to_array($lfs->getIterator()));
+        static::assertSame(['foobar'], array_values(iterator_to_array($lfs->getIterator())));
     }
 
     /**
