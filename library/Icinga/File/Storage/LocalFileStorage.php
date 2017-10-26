@@ -11,7 +11,6 @@ use Icinga\Exception\NotWritableError;
 use InvalidArgumentException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use SplFileInfo;
 
 /**
  * Stores files in the local file system
@@ -39,19 +38,18 @@ class LocalFileStorage implements StorageInterface
     {
         $baseDirLen = strlen($this->baseDir);
 
-        foreach (
-            new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator(
-                    $this->baseDir,
-                    RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
-                        | RecursiveDirectoryIterator::KEY_AS_PATHNAME
-                        | RecursiveDirectoryIterator::SKIP_DOTS
-                ),
-                RecursiveIteratorIterator::LEAVES_ONLY
-            )
-            as $path => $entry
-        ) {
-            /** @var SplFileInfo $entry */
+        $innerIterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(
+                $this->baseDir,
+                RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
+                    | RecursiveDirectoryIterator::KEY_AS_PATHNAME
+                    | RecursiveDirectoryIterator::SKIP_DOTS
+            ),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        foreach ($innerIterator as $path => $entry) {
+            /** @var \SplFileInfo $entry */
             if ($entry->isFile()) {
                 yield ltrim(substr($path, $baseDirLen), DIRECTORY_SEPARATOR);
             }
