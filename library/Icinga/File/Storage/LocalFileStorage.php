@@ -8,8 +8,6 @@ use Icinga\Exception\AlreadyExistsException;
 use Icinga\Exception\NotFoundError;
 use Icinga\Exception\NotReadableError;
 use Icinga\Exception\NotWritableError;
-use Icinga\Util\IteratorFilter;
-use Icinga\Util\IteratorMap;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
@@ -40,28 +38,23 @@ class LocalFileStorage implements StorageInterface
     {
         $baseDirLen = strlen($this->baseDir);
 
-        return new IteratorMap(
-            function($key, SplFileInfo $value) use ($baseDirLen)
-            {
-                $relativePath = ltrim(substr($key, $baseDirLen), DIRECTORY_SEPARATOR);
-                return array($relativePath, $relativePath);
-            },
-            new IteratorFilter(
-                function($key, SplFileInfo $value)
-                {
-                    return $value->isFile();
-                },
-                new RecursiveIteratorIterator(
-                    new RecursiveDirectoryIterator(
-                        $this->baseDir,
-                        RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
-                            | RecursiveDirectoryIterator::KEY_AS_PATHNAME
-                            | RecursiveDirectoryIterator::SKIP_DOTS
-                    ),
-                    RecursiveIteratorIterator::LEAVES_ONLY
-                )
+        foreach (
+            new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator(
+                    $this->baseDir,
+                    RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
+                        | RecursiveDirectoryIterator::KEY_AS_PATHNAME
+                        | RecursiveDirectoryIterator::SKIP_DOTS
+                ),
+                RecursiveIteratorIterator::LEAVES_ONLY
             )
-        );
+            as $path => $entry
+        ) {
+            /** @var SplFileInfo $entry */
+            if ($entry->isFile()) {
+                yield ltrim(substr($path, $baseDirLen), DIRECTORY_SEPARATOR);
+            }
+        }
     }
 
     public function has($path)
